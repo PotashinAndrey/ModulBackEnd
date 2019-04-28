@@ -16,10 +16,12 @@ namespace ModulThird.Infrastructure
 
         public async Task<Spoiler> GetById(Guid id)
         {
+            Console.WriteLine(id.ToString());
+
             using (var connection = new NpgsqlConnection(ConnectionString))
             {
                 return await connection.QuerySingleAsync<Spoiler>(
-                    "SELECT * FROM spoilers WHERE Id = @id", new { id });
+                    "SELECT * FROM spoilers WHERE \"filmId\" = @id LIMIT 1", new { id });
             }
 
         }

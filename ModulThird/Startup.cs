@@ -30,6 +30,9 @@ namespace ModulThird
             services.AddScoped<GetSpoilersInfoRequestHandler>();
             services.AddScoped<ISpoilerInfoService, SpoilerInfoService>();
 
+            services.AddScoped<AppendFilmsRequestHandler>();
+            services.AddScoped<IFilmAddToService, FilmAddToService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
