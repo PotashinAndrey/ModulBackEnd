@@ -22,7 +22,7 @@ namespace ModulThird.Infrastructure
                 string query = "INSERT INTO films (id, name, releasedate)"
                     + " VALUES (@id, @name, @releasedate)";
 
-                await connection.QuerySingleAsync<Film>(query, film);
+                await connection.ExecuteAsync(query, film);
             }
         }
     }
