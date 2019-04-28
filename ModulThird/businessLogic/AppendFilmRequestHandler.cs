@@ -2,24 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ModulThird.Services;
+//using ModulThird.Services;
 using ModulThird.Models;
+using MassTransit;
+using ModulThird.Commands;
 
 
 namespace ModulThird.BusinessLogic
 {
     public class AppendFilmsRequestHandler
     {
-        private readonly IFilmAddToService _filmAddToService;
+        private readonly IBus _bus;
 
-        public AppendFilmsRequestHandler(IFilmAddToService filmAddToService)
+        public AppendFilmsRequestHandler(IBus bus)
         {
-            _filmAddToService = filmAddToService;
+            _bus = bus;
         }
 
-        public void Handle(Film film)
+        public Task<Film> Handle(Film film)
         {
-            _filmAddToService.SetFilm(film);
+            Guid id = Guid.NewGuid();
+            film.Id = id;
+
+            _bus.Send(new AppendFilmCommand()
+            {
+                Film = film
+            });
+
+            return Task.FromResult<Film>(film);
         }
     }
 }

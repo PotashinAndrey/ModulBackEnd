@@ -31,10 +31,7 @@ namespace ModulThird.Controllers
         [HttpPost("append")]
         public Task<Film> PostData(Film film)
         {
-            Guid id = Guid.NewGuid();   
-            film.Id = id;
-            _appendFilmsRequestHandler.Handle(film);
-            return Task.FromResult<Film>(film);
+            return _appendFilmsRequestHandler.Handle(film);
         }
 
     }

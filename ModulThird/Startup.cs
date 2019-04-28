@@ -9,6 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using ModulThird.BusinessLogic;
 using ModulThird.Infrastructure;
 using ModulThird.Services;
+using MassTransit;
+using ModulThird.Commands;
+using ModulThird.Consumers;
+using Microsoft.Extensions.Hosting;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace ModulThird
 {
@@ -32,6 +37,25 @@ namespace ModulThird
 
             services.AddScoped<AppendFilmsRequestHandler>();
             services.AddScoped<IFilmAddToService, FilmAddToService>();
+
+            services.AddScoped<AppendFilmConsumer>();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<AppendFilmConsumer>();
+                x.AddBus(provider => MassTransit.Bus.Factory.CreateUsingInMemory(cfg =>
+                {
+                    cfg.ReceiveEndpoint("append-film-queue", ep =>
+                    {
+                        ep.ConfigureConsumer<AppendFilmConsumer>(provider);
+                        EndpointConvention.Map<AppendFilmCommand>(ep.InputAddress);
+                    });
+                }));
+
+                x.AddRequestClient<AppendFilmCommand>();
+            });
+
+            services.AddSingleton<IHostedService, BusService>();
 
         }
 

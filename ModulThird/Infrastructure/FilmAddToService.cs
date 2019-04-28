@@ -6,6 +6,7 @@ using ModulThird.Models;
 using ModulThird.Services;
 using Npgsql;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace ModulThird.Infrastructure
@@ -15,7 +16,7 @@ namespace ModulThird.Infrastructure
         private const string ConnectionString = 
             "host=localhost;port=5432;database=films_spoilers;username=postgres;password=password";
 
-        public async void SetFilm(Film film)
+        public async Task<IActionResult> SetFilm(Film film)
         {
             using (var connection = new NpgsqlConnection(ConnectionString))
             {
@@ -23,7 +24,9 @@ namespace ModulThird.Infrastructure
                     + " VALUES (@id, @name, @releasedate)";
 
                 await connection.ExecuteAsync(query, film);
+                return new OkResult();
             }
         }
     }
+    
 }
